@@ -15,20 +15,20 @@ export const getDefaultDonations = (userId) => {
       quantity: '15',
       unit: 'kg',
       expiryDate: threeDaysFromNow.toISOString().split('T')[0],
-      location: 'Downtown Farmers Market, 123 Main St',
-      description: 'Organic vegetables, slightly imperfect but perfectly edible. Great for soup kitchens.',
+      location: 'Azadpur Mandi, Delhi',
+      description: 'Organic vegetables, slightly imperfect but perfectly edible. Great for community kitchens.',
       status: 'available',
       createdAt: twoDaysAgo.toISOString(),
       donorName: 'Food Donor'
     },
     {
       id: Date.now() - 2000,
-      foodType: 'Bread & Bakery Items',
+      foodType: 'Bread, Roti & Bakery Items',
       quantity: '8',
       unit: 'kg',
       expiryDate: fiveDaysFromNow.toISOString().split('T')[0],
-      location: 'City Bakery, 456 Oak Avenue',
-      description: 'Fresh bread, rolls, and pastries from today\'s batch. Best consumed within 2-3 days.',
+      location: 'Monginis Bakery, Andheri West, Mumbai',
+      description: 'Fresh bread, rotis, and buns from today\'s batch. Best consumed within 2-3 days.',
       status: 'available',
       createdAt: twoDaysAgo.toISOString(),
       donorName: 'Food Donor'
@@ -39,31 +39,31 @@ export const getDefaultDonations = (userId) => {
       quantity: '25',
       unit: 'kg',
       expiryDate: tenDaysFromNow.toISOString().split('T')[0],
-      location: 'Warehouse District, 789 Industrial Blvd',
-      description: 'Assorted canned vegetables, beans, and soups. Long shelf life.',
+      location: 'Reliance Warehouse, Gurgaon',
+      description: 'Assorted canned vegetables, dals, and packaged foods. Long shelf life.',
       status: 'available',
       createdAt: fiveDaysAgo.toISOString(),
       donorName: 'Food Donor'
     },
     {
       id: Date.now() - 4000,
-      foodType: 'Rice & Grains',
+      foodType: 'Rice, Dal & Grains',
       quantity: '30',
       unit: 'kg',
       expiryDate: sevenDaysFromNow.toISOString().split('T')[0],
-      location: 'Wholesale Store, 321 Commerce St',
-      description: 'Bulk rice, lentils, and quinoa. Perfect for large-scale meal preparation.',
+      location: 'D-Mart, Bangalore',
+      description: 'Bulk rice, dals, and atta. Perfect for large-scale meal preparation.',
       status: 'available',
       createdAt: fiveDaysAgo.toISOString(),
       donorName: 'Food Donor'
     },
     {
       id: Date.now() - 5000,
-      foodType: 'Dairy Products (Milk, Cheese, Yogurt)',
+      foodType: 'Dairy Products (Milk, Paneer, Curd)',
       quantity: '12',
       unit: 'kg',
       expiryDate: threeDaysFromNow.toISOString().split('T')[0],
-      location: 'Local Dairy Farm, 555 Country Road',
+      location: 'Amul Dairy, Pune',
       description: 'Fresh dairy products. Must be refrigerated immediately.',
       status: 'available',
       createdAt: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -87,8 +87,8 @@ export const getDefaultReceivedFood = (userId) => {
       quantity: '20',
       unit: 'kg',
       urgency: 'high',
-      location: 'Community Center, 100 Hope Street',
-      purpose: 'Distribution to homeless shelter residents. Feeding 50+ people daily.',
+      location: 'Seva Sadan, Kolkata',
+      purpose: 'Distribution to shelter residents. Feeding 50+ people daily.',
       status: 'completed',
       createdAt: sevenDaysAgo.toISOString(),
       seekerName: 'Food Seeker'
@@ -99,7 +99,7 @@ export const getDefaultReceivedFood = (userId) => {
       quantity: '15',
       unit: 'kg',
       urgency: 'medium',
-      location: 'Food Bank, 200 Charity Lane',
+      location: 'Annapurna Food Bank, Hyderabad',
       purpose: 'Weekly food distribution program for low-income families.',
       status: 'completed',
       createdAt: fiveDaysAgo.toISOString(),
@@ -111,7 +111,7 @@ export const getDefaultReceivedFood = (userId) => {
       quantity: '30',
       unit: 'kg',
       urgency: 'low',
-      location: 'Community Kitchen, 300 Service Road',
+      location: 'Akshaya Patra Kitchen, Chennai',
       purpose: 'Stock for community kitchen serving daily meals to seniors.',
       status: 'completed',
       createdAt: threeDaysAgo.toISOString(),
@@ -123,7 +123,7 @@ export const getDefaultReceivedFood = (userId) => {
       quantity: '10',
       unit: 'kg',
       urgency: 'high',
-      location: 'Youth Center, 400 Kids Avenue',
+      location: 'Bal Vikas Center, Jaipur',
       purpose: 'After-school snack program for underprivileged children.',
       status: 'approved',
       createdAt: oneDayAgo.toISOString(),
@@ -140,7 +140,7 @@ export const getDefaultDonorNotifications = () => {
       id: Date.now() - 1000,
       type: 'success',
       title: 'Donation Claimed!',
-      message: 'Your Fresh Vegetables donation has been claimed by Hope Community Center.',
+      message: 'Your Fresh Vegetables donation has been claimed by Goonj Community Center.',
       timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
       read: false
     },
@@ -156,7 +156,7 @@ export const getDefaultDonorNotifications = () => {
       id: Date.now() - 3000,
       type: 'message',
       title: 'Thank You Message',
-      message: 'City Food Bank sent you a thank you note for your generous donation.',
+      message: 'Mumbai Food Bank sent you a thank you note for your generous donation.',
       timestamp: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
       read: true
     },
@@ -195,7 +195,7 @@ export const getDefaultSeekerNotifications = () => {
       id: Date.now() - 3000,
       type: 'message',
       title: 'Donor Message',
-      message: 'Green Grocery Store wants to coordinate pickup time with you.',
+      message: 'More Supermarket wants to coordinate pickup time with you.',
       timestamp: new Date(now.getTime() - 12 * 60 * 60 * 1000).toISOString(),
       read: true
     },
@@ -216,7 +216,7 @@ export const getDefaultDonorMessages = () => {
   return [
     {
       id: Date.now() - 1000,
-      sender: 'Hope Community Center',
+      sender: 'Goonj Community Center',
       subject: 'Thank you for your donation!',
       preview: 'We received your vegetables donation and distributed it to 40 families...',
       body: `Dear Donor,
@@ -230,7 +230,7 @@ We would love to partner with you for future donations. Please let us know if yo
 Thank you again for your kindness and generosity!
 
 Best regards,
-Hope Community Center Team`,
+Goonj Community Center Team`,
       timestamp: new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString(),
       read: false
     },
@@ -267,10 +267,10 @@ Platform Admin Team`,
 
 This is a confirmation that your donation pickup has been scheduled:
 
-Donation: Bread & Bakery Items
+Donation: Bread & Roti Items
 Quantity: 8 kg
 Pickup Time: Tomorrow, 10:00 AM
-Pickup Location: City Bakery, 456 Oak Avenue
+Pickup Location: Monginis Bakery, Andheri West, Mumbai
 
 The recipient organization will arrive at the scheduled time. Please ensure the items are ready for pickup.
 
@@ -290,7 +290,7 @@ export const getDefaultSeekerMessages = () => {
   return [
     {
       id: Date.now() - 1000,
-      sender: 'Green Grocery Store',
+      sender: 'More Supermarket',
       subject: 'Donation Available - Pickup Coordination',
       preview: 'We have fresh produce available. Can we coordinate pickup time?...',
       body: `Hello,
@@ -302,12 +302,12 @@ We have 20kg of fresh vegetables available for donation. The items include:
 
 These are slightly imperfect but perfectly edible and nutritious. They need to be picked up within the next 2 days.
 
-Could you please confirm your availability for pickup? We're open Monday-Friday, 9 AM - 6 PM, and Saturday 9 AM - 2 PM.
+Could you please confirm your availability for pickup? We're open Monday-Saturday, 9 AM - 9 PM.
 
 Looking forward to working with you!
 
 Best regards,
-Green Grocery Store`,
+More Supermarket`,
       timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
       read: false
     },
@@ -326,8 +326,8 @@ Request Details:
 - Purpose: After-school snack program
 
 Donor Information:
-- Name: City Bakery
-- Location: 456 Oak Avenue
+- Name: Monginis Bakery
+- Location: Andheri West, Mumbai
 - Contact: Available in your dashboard
 
 Please coordinate with the donor for pickup arrangements. Make sure to bring appropriate containers and transportation.

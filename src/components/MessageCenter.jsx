@@ -29,9 +29,10 @@ const MessageCenter = ({ messages, onMarkAsRead, onDeleteMessage }) => {
 
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
-    return date.toLocaleString('en-US', {
-      month: 'short',
+    return date.toLocaleString('en-IN', {
       day: 'numeric',
+      month: 'short',
+      year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });

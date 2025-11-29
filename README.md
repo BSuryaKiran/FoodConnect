@@ -1,6 +1,6 @@
-# 🌱 GreenBites
+# 🌱 FoodConnect
 
-A modern web platform to track and reduce food waste, connecting food donors with seekers to improve food security.
+A modern web platform to track and reduce food waste across India, connecting food donors with recipient organizations to improve food security in communities nationwide.
 
 ![React](https://img.shields.io/badge/React-18.2.0-61DAFB?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-4.3.9-646CFF?logo=vite)
@@ -8,14 +8,17 @@ A modern web platform to track and reduce food waste, connecting food donors wit
 
 ## ✨ Features
 
-- 🍽️ **Donor Dashboard** - List surplus food, coordinate donations, and track impact
-- 🤝 **Seeker Dashboard** - Request food donations, manage logistics, and distribute to those in need
+- 🍽️ **Donor Dashboard** - List surplus food, coordinate donations, and track impact (in kg and ₹)
+- 🤝 **Recipient Dashboard** - Request food donations, manage logistics, and distribute to those in need
+- 👑 **Admin Dashboard (APP HEAD)** - Manage users, monitor platform activity, and oversee operations
+- 📊 **Data Analyst Dashboard** - Generate reports, analyze waste metrics, and provide recommendations
 - 🔔 **Notifications System** - Real-time alerts for donations and requests
-- 💬 **Messaging Center** - Communication between donors and seekers
-- 📊 **Statistics Tracking** - Monitor food donated, people helped, and CO₂ saved
-- 💾 **Data Persistence** - localStorage integration for offline data
+- 💬 **Messaging Center** - Communication between donors and recipient organizations
+- 📊 **Statistics Tracking** - Monitor food donated (kg), people helped, and CO₂ saved
+- 💾 **Data Persistence** - localStorage integration for offline data with email-based keys
 - 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
 - 🎨 **Clean Green UI** - Modern, intuitive interface with environmental theme
+- 🇮🇳 **Indian Context** - Adapted for Indian economy with ₹ (Rupees), kg measurements, and local organizations
 
 ## 🚀 Quick Start
 
@@ -27,10 +30,10 @@ A modern web platform to track and reduce food waste, connecting food donors wit
 
 ```bash
 # Clone the repository
-git clone https://github.com/spiderman3137/greenbites.git
+git clone https://github.com/spiderman3137/foodconnect.git
 
 # Navigate to project directory
-cd greenbites
+cd foodconnect
 
 # Install dependencies
 npm install
@@ -64,7 +67,7 @@ The app will open at `http://localhost:3000`
 ## 📁 Project Structure
 
 ```
-greenbites/
+foodconnect/
 ├── index.html                  # Entry HTML file
 ├── vite.config.js             # Vite configuration
 ├── package.json               # Dependencies and scripts

@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import Home from './components/Home.jsx';
 import Login from './components/Login.jsx';
 import DonorDashboard from './components/DonorDashboard.jsx';
 import SeekerDashboard from './components/SeekerDashboard.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import DataAnalystDashboard from './components/DataAnalystDashboard.jsx';
+import Footer from './components/Footer.jsx';
 import './App.css';
 
-function App() {
+function AppContent() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Check for existing session on mount
   useEffect(() => {
-    // TEMPORARY: Clear storage on every page load to always show login
-    // Remove these lines after first successful login test
-    localStorage.clear();
-    sessionStorage.clear();
-    
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       try {
@@ -36,6 +36,11 @@ function App() {
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('currentUser');
+    navigate('/');
+  };
+
+  const handleGetStarted = () => {
+    navigate('/login');
   };
 
   if (loading) {
@@ -48,14 +53,24 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="App">
+    <div className="App">
+      <div className="app-content">
         <Routes>
           <Route 
             path="/" 
             element={
               user ? (
-                <Navigate to={`/${user.type}-dashboard`} replace />
+                <Navigate to={`/${user.type === 'recipient' ? 'seeker' : user.type}-dashboard`} replace />
+              ) : (
+                <Home onGetStarted={handleGetStarted} />
+              )
+            } 
+          />
+          <Route 
+            path="/login" 
+            element={
+              user ? (
+                <Navigate to={`/${user.type === 'recipient' ? 'seeker' : user.type}-dashboard`} replace />
               ) : (
                 <Login onLogin={handleLogin} />
               )
@@ -74,8 +89,28 @@ function App() {
           <Route 
             path="/seeker-dashboard" 
             element={
-              user && user.type === 'seeker' ? (
+              user && (user.type === 'seeker' || user.type === 'recipient') ? (
                 <SeekerDashboard user={user} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+          <Route 
+            path="/admin-dashboard" 
+            element={
+              user && user.type === 'admin' ? (
+                <AdminDashboard user={user} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            } 
+          />
+          <Route 
+            path="/analyst-dashboard" 
+            element={
+              user && user.type === 'analyst' ? (
+                <DataAnalystDashboard user={user} onLogout={handleLogout} />
               ) : (
                 <Navigate to="/" replace />
               )
@@ -84,6 +119,15 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+      <Footer onGetStarted={handleGetStarted} />
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

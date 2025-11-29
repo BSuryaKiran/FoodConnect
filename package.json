@@ -1,16 +1,16 @@
-{
-  "name": "greenbites",
+﻿{
+  "name": "foodconnect",
   "version": "1.0.0",
-  "description": "GreenBites - Platform to reduce food wastage and improve food security",
+  "description": "FoodConnect - Platform to reduce food wastage and improve food security",
   "type": "module",
   "private": true,
-  "homepage" : "https://BSuryaKiran.github.io/food-management/",
+  "homepage": "https://BSuryaKiran.github.io/food-management/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^18.2.0",

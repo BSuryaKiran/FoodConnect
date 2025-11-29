@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
+import './DonorEnhancements.css';
 import NotificationBell from './NotificationBell.jsx';
 import MessageCenter from './MessageCenter.jsx';
 import StatCard from './StatCard.jsx';
@@ -14,7 +15,15 @@ const DonorDashboard = ({ user, onLogout }) => {
     totalDonations: 0,
     totalWeight: 0,
     peopleHelped: 0,
-    co2Saved: 0
+    co2Saved: 0,
+    wasteReduced: 0,
+    impactScore: 0
+  });
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [wasteTracking, setWasteTracking] = useState({
+    monthlyWaste: 0,
+    wasteReduction: 0,
+    trends: []
   });
   const [formData, setFormData] = useState({
     foodType: '',
@@ -28,7 +37,8 @@ const DonorDashboard = ({ user, onLogout }) => {
 
   // Load donations from localStorage or use defaults
   useEffect(() => {
-    const storedDonations = localStorage.getItem(`donations_${user.id}`);
+    const userKey = user.email || user.id;
+    const storedDonations = localStorage.getItem(`donations_${userKey}`);
     if (storedDonations) {
       try {
         const parsed = JSON.parse(storedDonations);
@@ -39,14 +49,14 @@ const DonorDashboard = ({ user, onLogout }) => {
       }
     } else {
       // Load default donations on first visit
-      const defaultDonations = getDefaultDonations(user.id);
+      const defaultDonations = getDefaultDonations(userKey);
       setDonations(defaultDonations);
       calculateStats(defaultDonations);
-      localStorage.setItem(`donations_${user.id}`, JSON.stringify(defaultDonations));
+      localStorage.setItem(`donations_${userKey}`, JSON.stringify(defaultDonations));
     }
 
     // Load notifications
-    const storedNotifications = localStorage.getItem(`notifications_${user.id}`);
+    const storedNotifications = localStorage.getItem(`notifications_${userKey}`);
     if (storedNotifications) {
       try {
         setNotifications(JSON.parse(storedNotifications));
@@ -56,11 +66,11 @@ const DonorDashboard = ({ user, onLogout }) => {
     } else {
       const defaultNotifications = getDefaultDonorNotifications();
       setNotifications(defaultNotifications);
-      localStorage.setItem(`notifications_${user.id}`, JSON.stringify(defaultNotifications));
+      localStorage.setItem(`notifications_${userKey}`, JSON.stringify(defaultNotifications));
     }
 
     // Load messages
-    const storedMessages = localStorage.getItem(`messages_${user.id}`);
+    const storedMessages = localStorage.getItem(`messages_${userKey}`);
     if (storedMessages) {
       try {
         setMessages(JSON.parse(storedMessages));
@@ -70,9 +80,9 @@ const DonorDashboard = ({ user, onLogout }) => {
     } else {
       const defaultMessages = getDefaultDonorMessages();
       setMessages(defaultMessages);
-      localStorage.setItem(`messages_${user.id}`, JSON.stringify(defaultMessages));
+      localStorage.setItem(`messages_${userKey}`, JSON.stringify(defaultMessages));
     }
-  }, [user.id]);
+  }, [user.email, user.id]);
 
   const calculateStats = (donationsList) => {
     const totalWeight = donationsList.reduce((sum, d) => {
@@ -80,12 +90,24 @@ const DonorDashboard = ({ user, onLogout }) => {
       return sum + weight;
     }, 0);
 
+    const wasteReduced = totalWeight * 0.85; // Assume 85% of donations prevent waste
+    const impactScore = Math.min(100, (totalWeight / 100) * 100); // Scale impact score
+
     setStats({
       totalDonations: donationsList.length,
       totalWeight: totalWeight.toFixed(1),
       peopleHelped: Math.floor(totalWeight * 4), // Estimate: 1kg feeds 4 people
-      co2Saved: (totalWeight * 2.5).toFixed(1) // Estimate: 1kg food = 2.5kg CO2
+      co2Saved: (totalWeight * 2.5).toFixed(1), // Estimate: 1kg food = 2.5kg CO2
+      wasteReduced: wasteReduced.toFixed(1),
+      impactScore: impactScore.toFixed(0)
     });
+
+    // Update waste tracking trends
+    setWasteTracking(prev => ({
+      ...prev,
+      monthlyWaste: totalWeight.toFixed(1),
+      wasteReduction: ((wasteReduced / (totalWeight + wasteReduced)) * 100).toFixed(1)
+    }));
   };
 
   const handleInputChange = (e) => {
@@ -149,7 +171,8 @@ const DonorDashboard = ({ user, onLogout }) => {
 
     const updatedDonations = [newDonation, ...donations];
     setDonations(updatedDonations);
-    localStorage.setItem(`donations_${user.id}`, JSON.stringify(updatedDonations));
+    const userKey = user.email || user.id;
+    localStorage.setItem(`donations_${userKey}`, JSON.stringify(updatedDonations));
     calculateStats(updatedDonations);
 
     // Reset form
@@ -168,7 +191,8 @@ const DonorDashboard = ({ user, onLogout }) => {
     if (window.confirm('Are you sure you want to delete this donation?')) {
       const updatedDonations = donations.filter(d => d.id !== id);
       setDonations(updatedDonations);
-      localStorage.setItem(`donations_${user.id}`, JSON.stringify(updatedDonations));
+      const userKey = user.email || user.id;
+      localStorage.setItem(`donations_${userKey}`, JSON.stringify(updatedDonations));
       calculateStats(updatedDonations);
     }
   };
@@ -183,7 +207,7 @@ const DonorDashboard = ({ user, onLogout }) => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -195,12 +219,14 @@ const DonorDashboard = ({ user, onLogout }) => {
       n.id === id ? { ...n, read: true } : n
     );
     setNotifications(updatedNotifications);
-    localStorage.setItem(`notifications_${user.id}`, JSON.stringify(updatedNotifications));
+    const userKey = user.email || user.id;
+    localStorage.setItem(`notifications_${userKey}`, JSON.stringify(updatedNotifications));
   };
 
   const handleClearAllNotifications = () => {
     setNotifications([]);
-    localStorage.setItem(`notifications_${user.id}`, JSON.stringify([]));
+    const userKey = user.email || user.id;
+    localStorage.setItem(`notifications_${userKey}`, JSON.stringify([]));
   };
 
   const handleMarkMessageAsRead = (id) => {
@@ -208,13 +234,15 @@ const DonorDashboard = ({ user, onLogout }) => {
       m.id === id ? { ...m, read: true } : m
     );
     setMessages(updatedMessages);
-    localStorage.setItem(`messages_${user.id}`, JSON.stringify(updatedMessages));
+    const userKey = user.email || user.id;
+    localStorage.setItem(`messages_${userKey}`, JSON.stringify(updatedMessages));
   };
 
   const handleDeleteMessage = (id) => {
     const updatedMessages = messages.filter(m => m.id !== id);
     setMessages(updatedMessages);
-    localStorage.setItem(`messages_${user.id}`, JSON.stringify(updatedMessages));
+    const userKey = user.email || user.id;
+    localStorage.setItem(`messages_${userKey}`, JSON.stringify(updatedMessages));
   };
 
   return (
@@ -249,15 +277,115 @@ const DonorDashboard = ({ user, onLogout }) => {
 
       {/* Main Content */}
       <main className="dashboard-main container">
-        {/* Stats Section */}
-        <section className="stats-section">
-          <StatCard
-            icon="📦"
-            value={stats.totalDonations}
-            label="Total Donations"
-          />
-          <StatCard
-            icon="⚖️"
+        {/* Navigation Tabs */}
+        <nav className="dashboard-nav">
+          <button 
+            className={activeTab === 'dashboard' ? 'active' : ''}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            📊 Dashboard
+          </button>
+          <button 
+            className={activeTab === 'donations' ? 'active' : ''}
+            onClick={() => setActiveTab('donations')}
+          >
+            📦 My Donations
+          </button>
+          <button 
+            className={activeTab === 'impact' ? 'active' : ''}
+            onClick={() => setActiveTab('impact')}
+          >
+            🌱 Impact Tracking
+          </button>
+          <button 
+            className={activeTab === 'messages' ? 'active' : ''}
+            onClick={() => setActiveTab('messages')}
+          >
+            💬 Messages
+          </button>
+        </nav>
+
+        {activeTab === 'dashboard' && (
+          <>
+            {/* Enhanced Stats Section */}
+            <section className="stats-section">
+              <StatCard
+                icon="📦"
+                value={stats.totalDonations}
+                label="Total Donations"
+                trend="+12% this month"
+              />
+              <StatCard
+                icon="⚖️"
+                value={`${stats.totalWeight} kg`}
+                label="Food Donated"
+                trend="+8.5% this month"
+              />
+              <StatCard
+                icon="👥"
+                value={stats.peopleHelped}
+                label="People Helped"
+                trend="+15% this month"
+              />
+              <StatCard
+                icon="🌱"
+                value={`${stats.co2Saved} kg`}
+                label="CO₂ Saved"
+                trend="+10% this month"
+              />
+              <StatCard
+                icon="♻️"
+                value={`${stats.wasteReduced} kg`}
+                label="Waste Reduced"
+                trend="+18% this month"
+              />
+              <StatCard
+                icon="⭐"
+                value={`${stats.impactScore}/100`}
+                label="Impact Score"
+                trend="+5 points this month"
+              />
+            </section>
+
+            {/* Impact Insights */}
+            <section className="impact-insights">
+              <div className="insights-card">
+                <h3>🎯 Your Impact This Month</h3>
+                <div className="insights-grid">
+                  <div className="insight-item">
+                    <span className="insight-value">{wasteTracking.wasteReduction}%</span>
+                    <span className="insight-label">Waste Reduction Rate</span>
+                  </div>
+                  <div className="insight-item">
+                    <span className="insight-value">{Math.floor(stats.totalWeight / 4)}</span>
+                    <span className="insight-label">Families Fed</span>
+                  </div>
+                  <div className="insight-item">
+                    <span className="insight-value">{(stats.co2Saved / 1000 * 3500).toFixed(0)}</span>
+                    <span className="insight-label">Km Driven Offset</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
+        {activeTab === 'donations' && (
+          <>
+            {/* Quick Actions */}
+            <section className="quick-actions">
+              <button
+                onClick={() => setShowModal(true)}
+                className="btn btn-primary add-donation-btn"
+              >
+                <span>+</span> Add New Donation
+              </button>
+            </section>
+
+            {/* Stats Section */}
+            <section className="stats-section">
+              <StatCard
+                icon="📦"
             value={`${stats.totalWeight} kg`}
             label="Food Donated"
           />
@@ -355,6 +483,115 @@ const DonorDashboard = ({ user, onLogout }) => {
             </div>
           )}
         </section>
+          </>
+        )}
+
+        {activeTab === 'impact' && (
+          <section className="impact-tracking">
+            <div className="impact-header">
+              <h2>🌱 Environmental Impact Tracking</h2>
+              <p>See how your donations are making a difference</p>
+            </div>
+
+            <div className="impact-metrics">
+              <div className="metric-card">
+                <div className="metric-icon">♻️</div>
+                <div className="metric-content">
+                  <h3>Waste Reduction</h3>
+                  <div className="metric-value">{stats.wasteReduced} kg</div>
+                  <div className="metric-description">Food waste prevented this month</div>
+                </div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-icon">🌍</div>
+                <div className="metric-content">
+                  <h3>Carbon Footprint</h3>
+                  <div className="metric-value">{stats.co2Saved} kg CO₂</div>
+                  <div className="metric-description">Emissions saved through donations</div>
+                </div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-icon">💧</div>
+                <div className="metric-content">
+                  <h3>Water Saved</h3>
+                  <div className="metric-value">{(stats.totalWeight * 1500).toLocaleString('en-IN')} L</div>
+                  <div className="metric-description">Water footprint reduction</div>
+                </div>
+              </div>
+
+              <div className="metric-card">
+                <div className="metric-icon">🏆</div>
+                <div className="metric-content">
+                  <h3>Impact Level</h3>
+                  <div className="metric-value">{stats.impactScore > 80 ? 'Champion' : stats.impactScore > 50 ? 'Hero' : 'Helper'}</div>
+                  <div className="metric-description">Your donor status</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="impact-goals">
+              <h3>🎯 Monthly Goals</h3>
+              <div className="goals-grid">
+                <div className="goal-item">
+                  <div className="goal-progress">
+                    <div className="progress-bar">
+                      <div className="progress" style={{width: `${Math.min(100, (stats.totalWeight / 50) * 100)}%`}}></div>
+                    </div>
+                    <span>{stats.totalWeight}/50 kg</span>
+                  </div>
+                  <p>Monthly donation target</p>
+                </div>
+                
+                <div className="goal-item">
+                  <div className="goal-progress">
+                    <div className="progress-bar">
+                      <div className="progress" style={{width: `${Math.min(100, (stats.totalDonations / 10) * 100)}%`}}></div>
+                    </div>
+                    <span>{stats.totalDonations}/10 donations</span>
+                  </div>
+                  <p>Monthly donation frequency</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="impact-tips">
+              <h3>💡 Tips to Increase Your Impact</h3>
+              <div className="tips-list">
+                <div className="tip-item">
+                  <span className="tip-icon">🕒</span>
+                  <div>
+                    <strong>Donate regularly:</strong> Consistent donations help recipients plan better and reduce overall waste.
+                  </div>
+                </div>
+                <div className="tip-item">
+                  <span className="tip-icon">📊</span>
+                  <div>
+                    <strong>Track expiry dates:</strong> Donate items 2-3 days before expiry for maximum freshness.
+                  </div>
+                </div>
+                <div className="tip-item">
+                  <span className="tip-icon">🤝</span>
+                  <div>
+                    <strong>Build relationships:</strong> Connect with local food banks for more efficient distribution.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {activeTab === 'messages' && (
+          <section className="messages-section">
+            <MessageCenter
+              messages={messages}
+              onMarkAsRead={handleMarkMessageAsRead}
+              onDeleteMessage={handleDeleteMessage}
+              userType="donor"
+            />
+          </section>
+        )}
       </main>
 
       {/* Add Donation Modal */}
@@ -381,7 +618,7 @@ const DonorDashboard = ({ user, onLogout }) => {
                   id="foodType"
                   name="foodType"
                   className="form-input"
-                  placeholder="e.g., Fresh Vegetables, Bread, Rice"
+                  placeholder="e.g., Fresh Vegetables, Roti, Rice, Dal"
                   value={formData.foodType}
                   onChange={handleInputChange}
                   required
@@ -428,7 +665,6 @@ const DonorDashboard = ({ user, onLogout }) => {
                   >
                     <option value="kg">Kilograms (kg)</option>
                     <option value="g">Grams (g)</option>
-                    <option value="lbs">Pounds (lbs)</option>
                   </select>
                 </div>
               </div>

@@ -1,0 +1,409 @@
+.food-waste-analytics {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.analytics-header h2 {
+  color: var(--primary-green);
+  font-size: 2em;
+  margin: 0;
+}
+
+.time-selector select {
+  padding: 8px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.time-selector select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+}
+
+/* Impact Cards Grid */
+.impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.impact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.impact-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--light-green), var(--primary-green));
+}
+
+.impact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.impact-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.impact-icon {
+  font-size: 2em;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f0f8f0, #e8f5e8);
+  border-radius: 50%;
+}
+
+.impact-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.impact-value {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: var(--primary-green);
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.impact-unit {
+  font-size: 0.6em;
+  color: #666;
+  font-weight: normal;
+}
+
+.impact-description {
+  color: #666;
+  font-size: 0.9em;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.impact-trend {
+  font-size: 0.85em;
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Analytics Content Layout */
+.analytics-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+/* Chart Styles */
+.analytics-chart {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-chart h3 {
+  margin: 0 0 24px 0;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.chart-container {
+  height: 300px;
+}
+
+.chart-bars {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 240px;
+  margin-bottom: 16px;
+}
+
+.chart-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 80px;
+}
+
+.chart-bars-container {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 200px;
+  margin-bottom: 8px;
+}
+
+.chart-bar {
+  width: 16px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.chart-bar.waste {
+  background: linear-gradient(180deg, var(--primary-green), var(--light-green));
+}
+
+.chart-bar.co2 {
+  background: linear-gradient(180deg, #42a5f5, #90caf9);
+}
+
+.chart-bar:hover {
+  transform: scaleX(1.2);
+  opacity: 0.8;
+}
+
+.chart-label {
+  font-size: 0.8em;
+  color: #666;
+  font-weight: 500;
+}
+
+.chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #666;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legend-color.waste {
+  background: var(--primary-green);
+}
+
+.legend-color.co2 {
+  background: #42a5f5;
+}
+
+/* Efficiency Metrics */
+.efficiency-metrics {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.efficiency-metrics h3 {
+  margin: 0 0 24px 0;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.metrics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.metric-item {
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.metric-item:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-1px);
+}
+
+.metric-label {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: var(--primary-green);
+  margin-bottom: 12px;
+}
+
+.metric-bar {
+  width: 100%;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.metric-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--light-green), var(--primary-green));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* AI Insights */
+.analytics-insights {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.analytics-insights h3 {
+  margin: 0 0 24px 0;
+  color: #333;
+  font-size: 1.3em;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.insight-item {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-green);
+  transition: all 0.3s ease;
+}
+
+.insight-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.insight-icon {
+  font-size: 1.8em;
+  margin-top: 4px;
+}
+
+.insight-content {
+  flex: 1;
+}
+
+.insight-content h4 {
+  margin: 0 0 8px 0;
+  color: var(--primary-green);
+  font-size: 1.1em;
+}
+
+.insight-content p {
+  margin: 0 0 12px 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.insight-impact {
+  font-size: 0.9em;
+  color: #28a745;
+  font-weight: 500;
+  background: #e8f5e8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .analytics-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .impact-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .impact-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-bars {
+    height: 180px;
+  }
+  
+  .chart-bars-container {
+    height: 140px;
+  }
+  
+  .insight-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .legend-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .food-waste-analytics {
+    padding: 16px;
+  }
+  
+  .impact-card {
+    padding: 16px;
+  }
+  
+  .impact-value {
+    font-size: 2em;
+  }
+  
+  .analytics-chart,
+  .efficiency-metrics,
+  .analytics-insights {
+    padding: 16px;
+  }
+}

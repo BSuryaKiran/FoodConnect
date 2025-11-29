@@ -10,6 +10,29 @@
   text-align: center;
   padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
   animation: fadeIn var(--transition-slow);
+  position: relative;
+}
+
+.header-nav {
+  position: absolute;
+  top: var(--spacing-md);
+  left: var(--spacing-md);
+}
+
+.back-home-btn {
+  background: none;
+  border: none;
+  color: var(--primary-green);
+  font-size: 14px;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.back-home-btn:hover {
+  background: var(--pale-green);
+  transform: translateX(-2px);
 }
 
 .logo {
@@ -115,81 +138,65 @@
   margin-bottom: var(--spacing-sm);
 }
 
-.demo-btn {
+.toggle-btn {
   width: 100%;
-}
-
-/* Login Info */
-.login-info {
-  background-color: var(--pale-green);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-md);
-  border-left: 4px solid var(--primary-green);
-}
-
-.info-text {
   font-size: 14px;
-  color: var(--dark-green);
-  margin-bottom: var(--spacing-xs);
 }
 
-.info-text:last-child {
-  margin-bottom: 0;
+/* Success Dialog */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn var(--transition-fast);
 }
 
-/* Features Section */
-.features-section {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-md);
-  width: 100%;
-  max-width: 1000px;
-  animation: fadeIn var(--transition-slow) 0.4s;
-}
-
-.feature-card {
+.dialog-content {
+  background: var(--white);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   text-align: center;
-  padding: var(--spacing-lg);
-  transition: all var(--transition-fast);
+  max-width: 400px;
+  width: 90%;
+  animation: slideUp var(--transition-fast);
 }
 
-.feature-card:hover {
-  background-color: var(--pale-green);
-}
-
-.feature-icon {
+.success-icon {
   font-size: 48px;
-  display: block;
   margin-bottom: var(--spacing-md);
 }
 
-.feature-card h3 {
-  font-size: 20px;
+.dialog-content h3 {
   color: var(--primary-green);
-  margin-bottom: var(--spacing-sm);
-  font-weight: 700;
+  margin-bottom: var(--spacing-lg);
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.feature-card p {
-  color: var(--dark-gray);
-  font-size: 14px;
-  line-height: 1.6;
+.dialog-content .btn {
+  min-width: 100px;
 }
 
-/* Footer */
-.login-footer {
-  text-align: center;
-  padding: var(--spacing-lg);
-  background-color: var(--primary-green);
-  color: var(--white);
-  margin-top: auto;
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.login-footer p {
-  margin: 0;
-  font-size: 14px;
-}
-
+/* Features Section */
 /* Responsive Design */
 @media (max-width: 768px) {
   .logo h1 {
@@ -206,18 +213,6 @@
 
   .login-title {
     font-size: 24px;
-  }
-
-  .features-section {
-    grid-template-columns: 1fr;
-  }
-
-  .feature-card {
-    padding: var(--spacing-md);
-  }
-
-  .feature-icon {
-    font-size: 36px;
   }
 }
 

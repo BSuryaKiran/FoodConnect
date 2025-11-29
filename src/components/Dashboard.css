@@ -47,15 +47,24 @@
   gap: var(--spacing-sm);
 }
 
-.logout-btn {
-  background-color: transparent;
-  color: var(--white);
-  border-color: var(--white);
+.btn.btn-outline.logout-btn {
+  background-color: transparent !important;
+  color: var(--white) !important;
+  border: 2px solid var(--white) !important;
+  font-size: 14px;
+  padding: 8px 16px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: inline-block !important;
 }
 
-.logout-btn:hover {
-  background-color: var(--white);
-  color: var(--primary-green);
+.btn.btn-outline.logout-btn:hover {
+  background-color: var(--white) !important;
+  color: var(--primary-green) !important;
+  border-color: var(--white) !important;
+  transform: none;
 }
 
 /* Main Content */
@@ -370,6 +379,16 @@
   .header-left {
     flex-direction: column;
     gap: var(--spacing-sm);
+  }
+
+  .header-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .logout-btn {
+    order: -1;
+    margin-bottom: var(--spacing-xs);
   }
 
   .dashboard-main {

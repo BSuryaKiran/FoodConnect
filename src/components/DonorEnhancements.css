@@ -1,0 +1,324 @@
+/* Dashboard Navigation */
+.dashboard-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-nav button {
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.dashboard-nav button.active {
+  background: var(--primary-green);
+  color: white;
+}
+
+.dashboard-nav button:hover:not(.active) {
+  background: #f5f5f5;
+  color: var(--primary-green);
+}
+
+/* Impact Insights */
+.impact-insights {
+  margin: 24px 0;
+}
+
+.insights-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.insights-card h3 {
+  margin: 0 0 20px 0;
+  color: var(--primary-green);
+  font-size: 1.3em;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+}
+
+.insight-item {
+  text-align: center;
+  padding: 16px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.insight-item:hover {
+  border-color: var(--primary-green);
+  transform: translateY(-2px);
+}
+
+.insight-value {
+  display: block;
+  font-size: 2em;
+  font-weight: bold;
+  color: var(--primary-green);
+  margin-bottom: 8px;
+}
+
+.insight-label {
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Impact Tracking */
+.impact-tracking {
+  padding: 20px 0;
+}
+
+.impact-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.impact-header h2 {
+  color: var(--primary-green);
+  font-size: 2em;
+  margin: 0 0 8px 0;
+}
+
+.impact-header p {
+  color: #666;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+.impact-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.metric-icon {
+  font-size: 2.5em;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--light-green), var(--primary-green));
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.metric-content h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 1.1em;
+}
+
+.metric-value {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: var(--primary-green);
+  margin-bottom: 4px;
+}
+
+.metric-description {
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Impact Goals */
+.impact-goals {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.impact-goals h3 {
+  margin: 0 0 20px 0;
+  color: var(--primary-green);
+  font-size: 1.3em;
+}
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.goal-item {
+  padding: 20px;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.goal-progress {
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--light-green), var(--primary-green));
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.goal-progress span {
+  font-weight: 600;
+  color: var(--primary-green);
+}
+
+.goal-item p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95em;
+}
+
+/* Impact Tips */
+.impact-tips {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.impact-tips h3 {
+  margin: 0 0 20px 0;
+  color: var(--primary-green);
+  font-size: 1.3em;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-green);
+}
+
+.tip-icon {
+  font-size: 1.5em;
+  margin-top: 2px;
+}
+
+.tip-item strong {
+  color: var(--primary-green);
+}
+
+/* Enhanced Stats Cards */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--light-green), var(--primary-green));
+}
+
+.stat-trend {
+  font-size: 0.8em;
+  color: #28a745;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.stat-trend.negative {
+  color: #dc3545;
+}
+
+/* Messages Section */
+.messages-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-nav {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .dashboard-nav button {
+    text-align: left;
+    padding: 16px 20px;
+  }
+  
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .impact-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .goals-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metric-card {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .tip-item {
+    flex-direction: column;
+    text-align: center;
+  }
+}
