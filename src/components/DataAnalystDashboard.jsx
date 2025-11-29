@@ -1,7 +1,10 @@
+// Import React library and hooks for state management and side effects
 import React, { useState, useEffect } from 'react';
+// Import reusable components
 import StatCard from './StatCard.jsx';
 import MessageCenter from './MessageCenter.jsx';
 import NotificationBell from './NotificationBell.jsx';
+// Import shared dashboard styles first, then analyst-specific styles
 import './Dashboard.css';
 import './DataAnalystDashboard.css';
 
@@ -556,52 +559,59 @@ const DataAnalystDashboard = ({ user, onLogout }) => {
   );
 
   return (
-    <div className="dashboard analyst-dashboard">
+    <div className="dashboard-container">
+      {/* Header - Consistent with Donor Dashboard */}
       <header className="dashboard-header">
-        <div className="header-left">
-          <h1>Data Analytics Dashboard</h1>
-          <p>Welcome, {user.name}</p>
-        </div>
-        <div className="header-right">
-          <NotificationBell
-            notifications={notifications}
-            onMarkAsRead={handleMarkNotificationAsRead}
-            onClearAll={handleClearAllNotifications}
-          />
-          <button className="logout-btn" onClick={onLogout}>
-            Logout
-          </button>
+        <div className="header-content">
+          <div className="header-left">
+            <span className="logo-icon">📊</span>
+            <div>
+              <h1 className="dashboard-title">Data Analytics Dashboard</h1>
+              <p className="dashboard-subtitle">Welcome back, {user.name}!</p>
+            </div>
+          </div>
+          <div className="header-actions">
+            <NotificationBell
+              notifications={notifications}
+              onMarkAsRead={handleMarkNotificationAsRead}
+              onClearAll={handleClearAllNotifications}
+            />
+            <button onClick={onLogout} className="btn btn-outline logout-btn">
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      <nav className="dashboard-nav">
-        <button 
-          className={activeTab === 'analytics' ? 'active' : ''}
-          onClick={() => setActiveTab('analytics')}
-        >
-          📊 Analytics
-        </button>
-        <button 
-          className={activeTab === 'reports' ? 'active' : ''}
-          onClick={() => setActiveTab('reports')}
-        >
-          📋 Reports
-        </button>
-        <button 
-          className={activeTab === 'recommendations' ? 'active' : ''}
-          onClick={() => setActiveTab('recommendations')}
-        >
-          🎯 Recommendations
-        </button>
-        <button 
-          className={activeTab === 'messages' ? 'active' : ''}
-          onClick={() => setActiveTab('messages')}
-        >
-          💬 Messages
-        </button>
-      </nav>
-
-      <main className="dashboard-content">
+      {/* Main Content */}
+      <main className="dashboard-main container">
+        {/* Navigation Tabs */}
+        <nav className="dashboard-nav">
+          <button 
+            className={activeTab === 'analytics' ? 'active' : ''}
+            onClick={() => setActiveTab('analytics')}
+          >
+            📊 Analytics
+          </button>
+          <button 
+            className={activeTab === 'reports' ? 'active' : ''}
+            onClick={() => setActiveTab('reports')}
+          >
+            📋 Reports
+          </button>
+          <button 
+            className={activeTab === 'recommendations' ? 'active' : ''}
+            onClick={() => setActiveTab('recommendations')}
+          >
+            🎯 Recommendations
+          </button>
+          <button 
+            className={activeTab === 'messages' ? 'active' : ''}
+            onClick={() => setActiveTab('messages')}
+          >
+            💬 Messages
+          </button>
+        </nav>
         {activeTab === 'analytics' && renderAnalytics()}
         {activeTab === 'reports' && renderReports()}
         {activeTab === 'recommendations' && renderRecommendations()}

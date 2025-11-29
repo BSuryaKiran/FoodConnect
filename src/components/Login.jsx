@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { authAPI } from '../services/api.js';
 
 const Login = ({ onLogin }) => {
   const [userType, setUserType] = useState('donor');
@@ -132,41 +133,75 @@ const Login = ({ onLogin }) => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
       if (isRegistering) {
-        // Registration successful
-        setSuccessMessage('Account registered successfully');
-        setShowSuccessDialog(true);
-        // Reset form after successful registration
-        setFormData({
-          email: '',
-          password: '',
-          name: '',
-          phone: '',
-          address: '',
-          organization: ''
-        });
-        setIsRegistering(false);
-      } else {
-        // Sign in successful (accept any credentials)
-        const userData = {
-          type: userType,
+        // Register new user via API
+        const response = await authAPI.register({
           email: formData.email,
-          name: formData.name || (userType === 'donor' ? 'Food Donor' : 'Food Seeker'),
-          id: formData.email
-        };
-        setSuccessMessage('Signed in successfully');
-        setShowSuccessDialog(true);
-        // After showing dialog, proceed to login
-        setTimeout(() => {
-          setShowSuccessDialog(false);
-          onLogin(userData);
-        }, 1500);
+          password: formData.password,
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          organization: formData.organization,
+          type: userType
+        });
+
+        if (response.success) {
+          console.log('✅ User registered:', response.user.email);
+          
+          // Registration successful
+          setSuccessMessage('Account registered successfully! Please sign in.');
+          setShowSuccessDialog(true);
+          // Reset form after successful registration
+          setFormData({
+            email: '',
+            password: '',
+            name: '',
+            phone: '',
+            address: '',
+            organization: ''
+          });
+          setTimeout(() => {
+            setShowSuccessDialog(false);
+            setIsRegistering(false);
+          }, 2000);
+        }
+      } else {
+        // Sign in - authenticate user via API
+        const response = await authAPI.login({
+          email: formData.email,
+          password: formData.password,
+          userType: userType
+        });
+
+        if (response.success) {
+          const userData = {
+            type: response.user.type,
+            email: response.user.email,
+            name: response.user.name,
+            phone: response.user.phone,
+            address: response.user.address,
+            organization: response.user.organization,
+            id: response.user.id
+          };
+
+          console.log('✅ User logged in:', { email: userData.email, name: userData.name, type: userData.type });
+          
+          setSuccessMessage('Signed in successfully!');
+          setShowSuccessDialog(true);
+          // After showing dialog, proceed to login
+          setTimeout(() => {
+            setShowSuccessDialog(false);
+            onLogin(userData);
+          }, 1500);
+        }
       }
-      
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setErrors({ general: error.message || 'An error occurred. Please try again.' });
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   const toggleMode = () => {

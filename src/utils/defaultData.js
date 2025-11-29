@@ -1,24 +1,39 @@
-// Default donations for donor dashboard
+/**
+ * Default Data Utility Module
+ * Provides default/sample data for donations, food requests, notifications, and messages
+ * Used to populate dashboards with realistic data on first visit
+ */
+
+/**
+ * Generate default donations for donor dashboard
+ * Creates sample donation entries with realistic Indian food items and locations
+ * @param {string} userId - User identifier for personalized data
+ * @returns {Array} Array of donation objects
+ */
 export const getDefaultDonations = (userId) => {
+  // Get current date/time for calculating relative dates
   const now = new Date();
+  // Calculate future dates for expiry dates (using milliseconds: days * 24 hours * 60 min * 60 sec * 1000 ms)
   const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
   const fiveDaysFromNow = new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000);
   const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
   const tenDaysFromNow = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+  // Calculate past dates for creation timestamps
   const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
   const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
 
+  // Return array of sample donation objects
   return [
     {
-      id: Date.now() - 1000,
+      id: Date.now() - 1000, // Unique ID using timestamp
       foodType: 'Fresh Vegetables (Carrots, Tomatoes, Lettuce)',
       quantity: '15',
       unit: 'kg',
-      expiryDate: threeDaysFromNow.toISOString().split('T')[0],
-      location: 'Azadpur Mandi, Delhi',
+      expiryDate: threeDaysFromNow.toISOString().split('T')[0], // Format as YYYY-MM-DD
+      location: 'Azadpur Mandi, Delhi', // Realistic Indian location
       description: 'Organic vegetables, slightly imperfect but perfectly edible. Great for community kitchens.',
-      status: 'available',
-      createdAt: twoDaysAgo.toISOString(),
+      status: 'available', // Current availability status
+      createdAt: twoDaysAgo.toISOString(), // When donation was created
       donorName: 'Food Donor'
     },
     {
@@ -72,7 +87,12 @@ export const getDefaultDonations = (userId) => {
   ];
 };
 
-// Default received food data for seeker dashboard
+/**
+ * Generate default received food records for seeker/recipient dashboard
+ * Creates sample food request entries that have been fulfilled
+ * @param {string} userId - User identifier for personalized data
+ * @returns {Array} Array of received food objects
+ */
 export const getDefaultReceivedFood = (userId) => {
   const now = new Date();
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
@@ -132,7 +152,11 @@ export const getDefaultReceivedFood = (userId) => {
   ];
 };
 
-// Default notifications for donor
+/**
+ * Generate default notifications for donor users
+ * Creates sample notification entries for donation updates and impact reports
+ * @returns {Array} Array of notification objects with type, message, timestamp
+ */
 export const getDefaultDonorNotifications = () => {
   const now = new Date();
   return [
@@ -171,7 +195,11 @@ export const getDefaultDonorNotifications = () => {
   ];
 };
 
-// Default notifications for seeker
+/**
+ * Generate default notifications for seeker/recipient users
+ * Creates sample notification entries for request approvals and donor messages
+ * @returns {Array} Array of notification objects with type, message, timestamp
+ */
 export const getDefaultSeekerNotifications = () => {
   const now = new Date();
   return [
@@ -210,7 +238,11 @@ export const getDefaultSeekerNotifications = () => {
   ];
 };
 
-// Default messages for donor
+/**
+ * Generate default messages for donor users
+ * Creates sample messages from seekers and system notifications
+ * @returns {Array} Array of message objects with sender, subject, body, timestamp
+ */
 export const getDefaultDonorMessages = () => {
   const now = new Date();
   return [
@@ -284,7 +316,11 @@ Food Waste Platform`,
   ];
 };
 
-// Default messages for seeker
+/**
+ * Generate default messages for seeker/recipient users
+ * Creates sample messages from donors, admin, and support
+ * @returns {Array} Array of message objects with sender, subject, body, timestamp
+ */
 export const getDefaultSeekerMessages = () => {
   const now = new Date();
   return [

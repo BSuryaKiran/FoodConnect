@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Dashboard.css';
 import './RecipientDashboard.css';
 import NotificationBell from './NotificationBell.jsx';
 import MessageCenter from './MessageCenter.jsx';
@@ -15,6 +16,10 @@ const SeekerDashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingRequest, setPendingRequest] = useState(null);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState('upi');
 
   // Request form state
   const [requestForm, setRequestForm] = useState({
@@ -28,7 +33,8 @@ const SeekerDashboard = ({ user, onLogout }) => {
     beneficiaries: '',
     description: '',
     pickupPreference: 'delivery',
-    storageCapacity: ''
+    storageCapacity: '',
+    distance: '5' // Distance in km for delivery fee calculation
   });
 
   // Load data on component mount
@@ -54,24 +60,62 @@ const SeekerDashboard = ({ user, onLogout }) => {
     }));
   };
 
+  // Calculate delivery fee based on distance and urgency
+  const calculateDeliveryFee = (distance, urgency, pickupPreference) => {
+    if (pickupPreference === 'pickup') return 0; // No fee for self-pickup
+    
+    const baseRate = 10; // Base rate ₹10
+    const perKmRate = 5; // ₹5 per km
+    const urgencyMultiplier = {
+      'low': 1,
+      'medium': 1.2,
+      'high': 1.5,
+      'critical': 2
+    };
+    
+    const distanceFee = parseFloat(distance) * perKmRate;
+    const totalFee = (baseRate + distanceFee) * (urgencyMultiplier[urgency] || 1);
+    return Math.round(totalFee);
+  };
+
   // Submit new food request
   const handleSubmitRequest = (e) => {
     e.preventDefault();
     
-    const userKey = user.email || user.id;
     const newRequest = {
       id: Date.now(),
       ...requestForm,
       status: 'Pending',
       dateRequested: new Date().toLocaleDateString(),
-      matchedDonors: Math.floor(Math.random() * 3) + 1
+      matchedDonors: Math.floor(Math.random() * 3) + 1,
+      deliveryFeePaid: false
     };
     
-    const updatedRequests = [...requests, newRequest];
-    setRequests(updatedRequests);
-    localStorage.setItem(`seekerRequests_${userKey}`, JSON.stringify(updatedRequests));
-    
-    // Reset form and close modal
+    // Calculate delivery fee if delivery is preferred
+    if (requestForm.pickupPreference === 'delivery' || requestForm.pickupPreference === 'either') {
+      const fee = calculateDeliveryFee(requestForm.distance, requestForm.urgency, requestForm.pickupPreference);
+      setDeliveryFee(fee);
+      setPendingRequest(newRequest);
+      setShowModal(false);
+      setShowPaymentModal(true);
+    } else {
+      // No delivery fee for self-pickup
+      const userKey = user.email || user.id;
+      const updatedRequests = [...requests, { ...newRequest, deliveryFee: 0, deliveryFeePaid: true }];
+      setRequests(updatedRequests);
+      localStorage.setItem(`seekerRequests_${userKey}`, JSON.stringify(updatedRequests));
+      
+      // Reset form and close modal
+      resetForm();
+      setShowModal(false);
+      
+      // Add success notification
+      addSuccessNotification(`Food request submitted successfully for ${requestForm.quantity} ${requestForm.foodType}`);
+    }
+  };
+
+  // Reset form helper
+  const resetForm = () => {
     setRequestForm({
       organization: user?.name || '',
       email: user?.email || '',
@@ -83,18 +127,51 @@ const SeekerDashboard = ({ user, onLogout }) => {
       beneficiaries: '',
       description: '',
       pickupPreference: 'delivery',
-      storageCapacity: ''
+      storageCapacity: '',
+      distance: '5'
     });
-    setShowModal(false);
-    
-    // Add success notification
+  };
+
+  // Add success notification helper
+  const addSuccessNotification = (message) => {
     const successNotification = {
       id: Date.now(),
-      message: `Food request submitted successfully for ${requestForm.quantity} ${requestForm.foodType}`,
+      message: message,
       timestamp: new Date().toLocaleString(),
       type: 'success'
     };
     setNotifications(prev => [successNotification, ...prev]);
+  };
+
+  // Handle payment confirmation
+  const handlePaymentConfirmation = () => {
+    const userKey = user.email || user.id;
+    const finalRequest = {
+      ...pendingRequest,
+      deliveryFee: deliveryFee,
+      deliveryFeePaid: true,
+      paymentMethod: paymentMethod,
+      paymentDate: new Date().toLocaleString()
+    };
+    
+    const updatedRequests = [...requests, finalRequest];
+    setRequests(updatedRequests);
+    localStorage.setItem(`seekerRequests_${userKey}`, JSON.stringify(updatedRequests));
+    
+    // Reset states
+    resetForm();
+    setShowPaymentModal(false);
+    setPendingRequest(null);
+    
+    // Add success notification
+    addSuccessNotification(`Food request submitted! Delivery fee of ₹${deliveryFee} paid successfully.`);
+  };
+
+  // Skip payment and cancel request
+  const handleSkipPayment = () => {
+    setShowPaymentModal(false);
+    setPendingRequest(null);
+    setShowModal(true); // Return to form
   };
 
   // Get status badge class
@@ -149,6 +226,24 @@ const SeekerDashboard = ({ user, onLogout }) => {
     setNotifications(prev => [notification, ...prev]);
   };
 
+  // Handle marking message as read
+  const handleMarkMessageAsRead = (id) => {
+    const updatedMessages = messages.map(m =>
+      m.id === id ? { ...m, read: true } : m
+    );
+    setMessages(updatedMessages);
+    const userKey = user.email || user.id;
+    localStorage.setItem(`messages_${userKey}`, JSON.stringify(updatedMessages));
+  };
+
+  // Handle deleting a message
+  const handleDeleteMessage = (id) => {
+    const updatedMessages = messages.filter(m => m.id !== id);
+    setMessages(updatedMessages);
+    const userKey = user.email || user.id;
+    localStorage.setItem(`messages_${userKey}`, JSON.stringify(updatedMessages));
+  };
+
   // Cancel request
   const handleCancelRequest = (requestId) => {
     if (window.confirm('Are you sure you want to cancel this request?')) {
@@ -184,62 +279,65 @@ const SeekerDashboard = ({ user, onLogout }) => {
   };
 
   return (
-    <div className="recipient-dashboard">
-      <div className="recipient-container">
-        {/* Enhanced Header */}
-        <header className="recipient-header">
-          <div className="recipient-header-left">
-            <span className="recipient-icon">🏢</span>
+    <div className="dashboard-container">
+      {/* Header - Consistent with Donor Dashboard */}
+      <header className="dashboard-header">
+        <div className="header-content">
+          <div className="header-left">
+            <span className="logo-icon">🏢</span>
             <div>
-              <h1 className="recipient-title">Recipient Organization Dashboard</h1>
-              <p className="recipient-subtitle">Welcome back, {user?.name || 'Food Recipient'}!</p>
+              <h1 className="dashboard-title">Recipient Organization Dashboard</h1>
+              <p className="dashboard-subtitle">Welcome back, {user?.name || 'Food Recipient'}!</p>
             </div>
           </div>
-          <div className="recipient-header-right">
+          <div className="header-actions">
             <NotificationBell 
               notifications={notifications} 
-              onNotificationClick={() => {}} 
+              onMarkAsRead={(id) => {}}
+              onClearAll={() => {}}
             />
-            <button 
-              className="header-btn btn-secondary"
-              onClick={() => setShowMessageCenter(true)}
-            >
-              💬 Messages ({messages.length})
-            </button>
-            <button className="header-btn btn-primary-gradient" onClick={onLogout}>
+            <MessageCenter
+              messages={messages}
+              onMarkAsRead={handleMarkMessageAsRead}
+              onDeleteMessage={handleDeleteMessage}
+            />
+            <button onClick={onLogout} className="btn btn-outline logout-btn">
               Logout
             </button>
           </div>
-        </header>
+        </div>
+      </header>
 
-        {/* Modern Tab Navigation */}
-        <nav className="recipient-tabs">
+      {/* Main Content */}
+      <main className="dashboard-main container">
+        {/* Navigation Tabs */}
+        <nav className="dashboard-nav">
           <button 
-            className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+            className={activeTab === 'overview' ? 'active' : ''}
             onClick={() => setActiveTab('overview')}
           >
             📊 Overview
           </button>
           <button 
-            className={`tab-btn ${activeTab === 'requests' ? 'active' : ''}`}
+            className={activeTab === 'requests' ? 'active' : ''}
             onClick={() => setActiveTab('requests')}
           >
             📋 Food Requests
           </button>
           <button 
-            className={`tab-btn ${activeTab === 'logistics' ? 'active' : ''}`}
+            className={activeTab === 'logistics' ? 'active' : ''}
             onClick={() => setActiveTab('logistics')}
           >
             🚚 Logistics
           </button>
           <button 
-            className={`tab-btn ${activeTab === 'impact' ? 'active' : ''}`}
+            className={activeTab === 'impact' ? 'active' : ''}
             onClick={() => setActiveTab('impact')}
           >
             📈 Impact & Reports
           </button>
           <button 
-            className={`tab-btn ${activeTab === 'community' ? 'active' : ''}`}
+            className={activeTab === 'community' ? 'active' : ''}
             onClick={() => setActiveTab('community')}
           >
             🤝 Community Network
@@ -903,7 +1001,7 @@ const SeekerDashboard = ({ user, onLogout }) => {
             </section>
           </>
         )}
-      </div>
+      </main>
 
       {/* Create Request Modal */}
       {showModal && (
@@ -1043,6 +1141,24 @@ const SeekerDashboard = ({ user, onLogout }) => {
                   />
                 </div>
                 
+                <div className="form-group">
+                  <label>Estimated Distance (km) *</label>
+                  <input
+                    type="number"
+                    name="distance"
+                    value={requestForm.distance}
+                    onChange={handleInputChange}
+                    min="1"
+                    step="0.5"
+                    placeholder="Distance from donor location"
+                    required
+                  />
+                  <small style={{color: '#666', fontSize: '0.85rem', marginTop: '4px', display: 'block'}}>
+                    💡 Delivery fee: ₹{calculateDeliveryFee(requestForm.distance || 5, requestForm.urgency, requestForm.pickupPreference)} 
+                    {requestForm.pickupPreference === 'pickup' && ' (No fee for self-pickup)'}
+                  </small>
+                </div>
+                
                 <div className="form-group full-width">
                   <label>Additional Details</label>
                   <textarea
@@ -1064,6 +1180,117 @@ const SeekerDashboard = ({ user, onLogout }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delivery Fee Payment Modal */}
+      {showPaymentModal && pendingRequest && (
+        <div className="modal-overlay" onClick={() => {}}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{maxWidth: '500px'}}>
+            <div className="modal-header">
+              <h2>🚚 Delivery Fee Payment</h2>
+              <button className="modal-close" onClick={handleSkipPayment}>×</button>
+            </div>
+            
+            <div className="payment-container" style={{padding: '20px'}}>
+              <div style={{background: '#f0f9ff', padding: '20px', borderRadius: '12px', marginBottom: '20px', border: '2px solid #3b82f6'}}>
+                <h3 style={{margin: '0 0 15px 0', color: '#1e40af', fontSize: '1.1rem'}}>📦 Request Summary</h3>
+                <div style={{display: 'grid', gap: '8px', fontSize: '0.95rem'}}>
+                  <p><strong>Food Type:</strong> {pendingRequest.foodType}</p>
+                  <p><strong>Quantity:</strong> {pendingRequest.quantity}</p>
+                  <p><strong>Delivery Address:</strong> {pendingRequest.address}</p>
+                  <p><strong>Distance:</strong> {pendingRequest.distance} km</p>
+                  <p><strong>Urgency:</strong> <span style={{textTransform: 'capitalize'}}>{pendingRequest.urgency}</span></p>
+                </div>
+              </div>
+
+              <div style={{background: '#dcfce7', padding: '20px', borderRadius: '12px', marginBottom: '20px', border: '2px solid #22c55e'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px'}}>
+                  <h3 style={{margin: 0, color: '#15803d'}}>💰 Payment Details</h3>
+                </div>
+                <div style={{fontSize: '0.9rem', color: '#166534', marginBottom: '15px'}}>
+                  <p style={{margin: '5px 0'}}>✅ Food is <strong>FREE</strong> (donated by generous donors)</p>
+                  <p style={{margin: '5px 0'}}>🚚 You only pay for delivery service</p>
+                </div>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: 'white', borderRadius: '8px'}}>
+                  <span style={{fontSize: '1.1rem', fontWeight: '600'}}>Delivery Fee:</span>
+                  <span style={{fontSize: '1.5rem', fontWeight: 'bold', color: '#15803d'}}>₹{deliveryFee}</span>
+                </div>
+              </div>
+
+              <div style={{marginBottom: '20px'}}>
+                <label style={{display: 'block', marginBottom: '10px', fontWeight: '600', color: '#333'}}>Select Payment Method:</label>
+                <div style={{display: 'grid', gap: '10px'}}>
+                  <label style={{display: 'flex', alignItems: 'center', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', background: paymentMethod === 'upi' ? '#f0f9ff' : 'white', borderColor: paymentMethod === 'upi' ? '#3b82f6' : '#e5e7eb'}}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="upi"
+                      checked={paymentMethod === 'upi'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      style={{marginRight: '10px'}}
+                    />
+                    <span>📱 UPI (GPay, PhonePe, Paytm)</span>
+                  </label>
+                  
+                  <label style={{display: 'flex', alignItems: 'center', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', background: paymentMethod === 'card' ? '#f0f9ff' : 'white', borderColor: paymentMethod === 'card' ? '#3b82f6' : '#e5e7eb'}}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      checked={paymentMethod === 'card'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      style={{marginRight: '10px'}}
+                    />
+                    <span>💳 Credit/Debit Card</span>
+                  </label>
+                  
+                  <label style={{display: 'flex', alignItems: 'center', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', background: paymentMethod === 'netbanking' ? '#f0f9ff' : 'white', borderColor: paymentMethod === 'netbanking' ? '#3b82f6' : '#e5e7eb'}}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="netbanking"
+                      checked={paymentMethod === 'netbanking'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      style={{marginRight: '10px'}}
+                    />
+                    <span>🏦 Net Banking</span>
+                  </label>
+                  
+                  <label style={{display: 'flex', alignItems: 'center', padding: '12px', border: '2px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', background: paymentMethod === 'cod' ? '#f0f9ff' : 'white', borderColor: paymentMethod === 'cod' ? '#3b82f6' : '#e5e7eb'}}>
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cod"
+                      checked={paymentMethod === 'cod'}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      style={{marginRight: '10px'}}
+                    />
+                    <span>💵 Cash on Delivery</span>
+                  </label>
+                </div>
+              </div>
+
+              <div className="form-actions" style={{display: 'flex', gap: '10px', marginTop: '25px'}}>
+                <button 
+                  type="button" 
+                  className="header-btn btn-secondary" 
+                  onClick={handleSkipPayment}
+                  style={{flex: 1}}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="button" 
+                  className="header-btn btn-primary-gradient" 
+                  onClick={handlePaymentConfirmation}
+                  style={{flex: 1}}
+                >
+                  Confirm Payment ₹{deliveryFee}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

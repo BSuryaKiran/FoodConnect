@@ -1,7 +1,10 @@
+// Import React library and hooks for state management and side effects
 import React, { useState, useEffect } from 'react';
+// Import reusable components
 import StatCard from './StatCard.jsx';
 import MessageCenter from './MessageCenter.jsx';
 import NotificationBell from './NotificationBell.jsx';
+// Import shared dashboard styles first, then admin-specific styles
 import './Dashboard.css';
 import './AdminDashboard.css';
 
@@ -317,59 +320,59 @@ const AdminDashboard = ({ user, onLogout }) => {
   );
 
   return (
-    <div className="dashboard admin-dashboard">
-      <header className="dashboard-header admin-header">
-        <div className="header-left">
-          <div className="admin-badge">
-            <span className="badge-icon">👑</span>
-            <span className="badge-text">APP HEAD</span>
+    <div className="dashboard-container">
+      {/* Header - Consistent with Donor Dashboard */}
+      <header className="dashboard-header">
+        <div className="header-content">
+          <div className="header-left">
+            <span className="logo-icon">👑</span>
+            <div>
+              <h1 className="dashboard-title">Administrator Dashboard</h1>
+              <p className="dashboard-subtitle">Welcome back, {user.name}!</p>
+            </div>
           </div>
-          <div className="header-info">
-            <h1>Administrator Dashboard</h1>
-            <p className="admin-subtitle">Platform Control & Management</p>
-            <p className="admin-name">Logged in as: <strong>{user.name}</strong></p>
+          <div className="header-actions">
+            <NotificationBell 
+              notifications={notifications}
+              onMarkAsRead={handleMarkNotificationAsRead}
+              onClearAll={handleClearAllNotifications}
+            />
+            <button onClick={onLogout} className="btn btn-outline logout-btn">
+              Logout
+            </button>
           </div>
-        </div>
-        <div className="header-right">
-          <NotificationBell 
-            notifications={notifications}
-            onMarkAsRead={handleMarkNotificationAsRead}
-            onClearAll={handleClearAllNotifications}
-          />
-          <button className="logout-btn admin-logout-btn" onClick={onLogout}>
-            <span>🚪</span> Logout
-          </button>
         </div>
       </header>
 
-      <nav className="dashboard-nav">
-        <button 
-          className={activeTab === 'overview' ? 'active' : ''}
-          onClick={() => setActiveTab('overview')}
-        >
-          📊 Overview
-        </button>
-        <button 
-          className={activeTab === 'users' ? 'active' : ''}
-          onClick={() => setActiveTab('users')}
-        >
-          👥 User Management
-        </button>
-        <button 
-          className={activeTab === 'content' ? 'active' : ''}
-          onClick={() => setActiveTab('content')}
-        >
-          🛡️ Content Moderation
-        </button>
-        <button 
-          className={activeTab === 'messages' ? 'active' : ''}
-          onClick={() => setActiveTab('messages')}
-        >
-          💬 Messages
-        </button>
-      </nav>
-
-      <main className="dashboard-content">
+      {/* Main Content */}
+      <main className="dashboard-main container">
+        {/* Navigation Tabs */}
+        <nav className="dashboard-nav">
+          <button 
+            className={activeTab === 'overview' ? 'active' : ''}
+            onClick={() => setActiveTab('overview')}
+          >
+            📊 Overview
+          </button>
+          <button 
+            className={activeTab === 'users' ? 'active' : ''}
+            onClick={() => setActiveTab('users')}
+          >
+            👥 User Management
+          </button>
+          <button 
+            className={activeTab === 'content' ? 'active' : ''}
+            onClick={() => setActiveTab('content')}
+          >
+            🛡️ Content Moderation
+          </button>
+          <button 
+            className={activeTab === 'messages' ? 'active' : ''}
+            onClick={() => setActiveTab('messages')}
+          >
+            💬 Messages
+          </button>
+        </nav>
         {activeTab === 'overview' && renderOverview()}
         {activeTab === 'users' && renderUserManagement()}
         {activeTab === 'content' && renderContentModeration()}

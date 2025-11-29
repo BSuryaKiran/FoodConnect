@@ -1,34 +1,74 @@
+// Import React library and useState hook for component state management
 import React, { useState } from 'react';
+// Import component-specific CSS styles
 import './MessageCenter.css';
 
+/**
+ * MessageCenter Component
+ * Provides a dropdown interface for viewing and managing messages
+ * Features include: message list, message details view, mark as read, and delete
+ * 
+ * @param {Array} messages - Array of message objects with sender, subject, body, etc.
+ * @param {Function} onMarkAsRead - Callback to mark a message as read
+ * @param {Function} onDeleteMessage - Callback to delete a message
+ */
 const MessageCenter = ({ messages, onMarkAsRead, onDeleteMessage }) => {
+  // State to control dropdown visibility (open/closed)
   const [isOpen, setIsOpen] = useState(false);
+  // State to track which message is currently selected for detailed view
   const [selectedMessage, setSelectedMessage] = useState(null);
   
+  // Calculate count of unread messages by filtering messages array
   const unreadCount = messages.filter(m => !m.read).length;
 
+  /**
+   * Toggle message center dropdown open/closed
+   * Switches between showing and hiding the message list
+   */
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
+  /**
+   * Select a message to view its full details
+   * Automatically marks message as read if it's unread
+   * @param {Object} message - The message object to display
+   */
   const handleSelectMessage = (message) => {
     setSelectedMessage(message);
+    // If message hasn't been read yet, mark it as read
     if (!message.read) {
       onMarkAsRead(message.id);
     }
   };
 
+  /**
+   * Go back from message detail view to message list
+   * Clears the selected message state
+   */
   const handleBack = () => {
     setSelectedMessage(null);
   };
 
+  /**
+   * Delete a message and return to message list
+   * @param {number} id - ID of message to delete
+   */
   const handleDelete = (id) => {
     onDeleteMessage(id);
+    // Clear selected message after deletion
     setSelectedMessage(null);
   };
 
+  /**
+   * Format timestamp to readable date and time format
+   * Uses Indian locale format (e.g., "28 Nov 2024, 02:30 PM")
+   * @param {string} timestamp - ISO timestamp string
+   * @returns {string} Formatted date and time string
+   */
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
+    // Format with Indian locale settings
     return date.toLocaleString('en-IN', {
       day: 'numeric',
       month: 'short',
@@ -38,7 +78,13 @@ const MessageCenter = ({ messages, onMarkAsRead, onDeleteMessage }) => {
     });
   };
 
+  /**
+   * Get appropriate avatar emoji based on sender type
+   * @param {string} sender - Name/type of message sender
+   * @returns {string} Emoji representing the sender
+   */
   const getSenderAvatar = (sender) => {
+    // Map sender types to their corresponding emoji avatars
     const avatars = {
       'System': '🤖',
       'Admin': '👨‍💼',
@@ -46,6 +92,7 @@ const MessageCenter = ({ messages, onMarkAsRead, onDeleteMessage }) => {
       'Donor': '🍽️',
       'Seeker': '🤝'
     };
+    // Return matching avatar or default user icon
     return avatars[sender] || '👤';
   };
 

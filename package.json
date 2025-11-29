@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "foodconnect",
   "version": "1.0.0",
   "description": "FoodConnect - Platform to reduce food wastage and improve food security",
@@ -10,7 +10,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "server": "cd server && npm run dev",
+    "start": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -21,6 +23,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.0.0",
+    "concurrently": "^8.2.2",
     "gh-pages": "^6.3.0",
     "vite": "^4.3.9"
   }

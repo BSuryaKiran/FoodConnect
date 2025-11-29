@@ -1,6 +1,11 @@
-.analyst-dashboard {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  min-height: 100vh;
+/* ============================================
+   DATA ANALYST DASHBOARD - SPECIFIC STYLES
+   Analyst-specific styles that extend Dashboard.css
+   ============================================ */
+
+/* Logo icon customization for analyst */
+.dashboard-container .logo-icon {
+  font-size: 48px;
 }
 
 .analytics-overview {
