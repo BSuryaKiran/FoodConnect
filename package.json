@@ -4,7 +4,7 @@
   "description": "FoodConnect - Platform to reduce food wastage and improve food security",
   "type": "module",
   "private": true,
-  "homepage": "https://BSuryaKiran.github.io/food-management/",
+  "homepage": "https://github.com/BSuryaKiran/FoodConnect/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

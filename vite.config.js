@@ -14,7 +14,7 @@ export default defineConfig({
   
   // Base public path for the application
   // Used when deploying to GitHub Pages or subdirectories
-  base: '/food-management/',
+  base: '/FoodConnect/',
   
   // Development server configuration
   server: {
